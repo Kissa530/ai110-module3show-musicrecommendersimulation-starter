@@ -31,25 +31,72 @@ are scored. The other three are loaded but not yet used.
 
 - What information does your `UserProfile` store
 
-`favorite_genre`, `favorite_mood`, `target_energy`, and `target_tempo`.
+
+```python
+user_profile = {
+    "favorite_genre": "lofi",
+    "favorite_mood": "chill",
+    "target_energy": 0.40,
+    "target_tempo": 80,
+}
+```
 
 - How does your `Recommender` compute a score for each song
 
-Genre and mood score 1 for a match and 0 otherwise. Energy and tempo score by
-closeness to the user's target (`1 - |song_value - target_value|`, with tempo
-scaled by its range), so songs nearer the target score higher. The total is a
-weighted sum: `2.0·genre + 1.5·mood + 2.0·energy + 0.5·tempo`. Genre weighs
-most because it is the first filter people usually apply.
+Each song gets points from these rules (maximum 4.5):
 
-- How do you choose which songs to recommend
+- +2.0 for a genre match
+- +1.0 for a mood match
+- up to +1.0 for energy closeness: `1 - |song_energy - target_energy|`
+- up to +0.5 for tempo closeness: `max(0, 1 - |song_bpm - target_bpm| / 94)`
+  (94 is the tempo range in the catalog; the `max(0, ...)` keeps the score
+  from going negative)
+
+Genre is weighted most because it is usually the first filter people apply.
+Mood is next because it captures the vibe, and tempo is lowest because it
+overlaps with energy.
+
+
+- How do you choose which songs to recommend?
 
 Score every song, sort from highest to lowest, and return the top *k*.
 
 
-Flow: UserProfile + songs → score each song → sort → top *k*
+Flow/Algorithm Recipe: 
+```
+INPUT
+  user_profile = {genre, mood, target_energy, target_tempo}
+        |
+        v
+PROCESS (loop over every row in songs.csv)
+  for each song:
+      score = 0
+      if song.genre == profile.genre:  score += 2.0
+      if song.mood  == profile.mood:   score += 1.0
+      score += 1 - |song.energy - target_energy|
+      score += 0.5 * max(0, 1 - |song.tempo - target_tempo| / 94)
+      save (song, score)
+        |
+        v
+OUTPUT
+  sort all (song, score) pairs, highest first
+  return the top K (e.g., 5)
+```
+Worked example (Library Rain, lofi/chill profile): genre match +2.00,
+mood match +1.00, energy closeness +0.95, tempo closeness +0.46, for a total
+of 4.41.
 
-Limitation: Heavy genre weighting may over-favor a user's usual genre
-and create a filter bubble (covered in my Model Card).
+
+**Expected Biases**
+
+- Genre carries the most weight, so the system may over-prioritize genre and
+  miss great songs that match the user's mood and energy but not the genre.
+- Moods and genres are exact-match labels, so "chill" and "relaxed" count as
+  a total miss even though they are close.
+- The catalog is small and most genres have only one song, so results can
+  drop off sharply after the first match.
+- The profile stores one genre and one mood, so users with mixed tastes are
+  poorly represented.
 
 ---
 
