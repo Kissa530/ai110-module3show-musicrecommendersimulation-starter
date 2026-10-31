@@ -17,17 +17,39 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Real platforms like Spotify and YouTube combine collaborative filtering
+(learning from other users' behavior) with content-based filtering (matching
+song attributes). My recommender is content-based only: it compares each
+song's attributes to a user's taste profile.
 
-Some prompts to answer:
+
 
 - What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
+
+`genre`, `mood`, `energy`, `tempo_bpm`, `valence`, `danceability`, and `acousticness`. In this first version, only genre, mood, energy, and tempo
+are scored. The other three are loaded but not yet used.
+
 - What information does your `UserProfile` store
+
+`favorite_genre`, `favorite_mood`, `target_energy`, and `target_tempo`.
+
 - How does your `Recommender` compute a score for each song
+
+Genre and mood score 1 for a match and 0 otherwise. Energy and tempo score by
+closeness to the user's target (`1 - |song_value - target_value|`, with tempo
+scaled by its range), so songs nearer the target score higher. The total is a
+weighted sum: `2.0·genre + 1.5·mood + 2.0·energy + 0.5·tempo`. Genre weighs
+most because it is the first filter people usually apply.
+
 - How do you choose which songs to recommend
 
-You can include a simple diagram or bullet list if helpful.
+Score every song, sort from highest to lowest, and return the top *k*.
+
+
+Flow: UserProfile + songs → score each song → sort → top *k*
+
+Limitation: Heavy genre weighting may over-favor a user's usual genre
+and create a filter bubble (covered in my Model Card).
 
 ---
 
