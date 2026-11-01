@@ -2,6 +2,12 @@ import csv
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
+GENRE_MATCH_POINTS = 2.0
+MOOD_MATCH_POINTS = 1.0
+ENERGY_CLOSENESS_MULTIPLIER = 1.0
+TEMPO_CLOSENESS_MAX_POINTS = 0.5
+TEMPO_CLOSENESS_RANGE_BPM = 94
+
 @dataclass
 class Song:
     """
@@ -64,20 +70,23 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     if song["genre"] == user_prefs["favorite_genre"]:
-        score += 2.0
-        reasons.append("genre match (+2.0)")
+        score += GENRE_MATCH_POINTS
+        reasons.append(f"genre match (+{GENRE_MATCH_POINTS:.1f})")
 
     if song["mood"] == user_prefs["favorite_mood"]:
-        score += 1.0
-        reasons.append("mood match (+1.0)")
+        score += MOOD_MATCH_POINTS
+        reasons.append(f"mood match (+{MOOD_MATCH_POINTS:.1f})")
 
-    energy_score = 1 - abs(song["energy"] - user_prefs["target_energy"])
+    energy_score = ENERGY_CLOSENESS_MULTIPLIER * max(
+        0,
+        1 - abs(song["energy"] - user_prefs["target_energy"]),
+    )
     score += energy_score
     reasons.append(f"energy closeness (+{energy_score:.2f})")
 
-    tempo_score = 0.5 * max(
+    tempo_score = TEMPO_CLOSENESS_MAX_POINTS * max(
         0,
-        1 - abs(song["tempo_bpm"] - user_prefs["target_tempo"]) / 94,
+        1 - abs(song["tempo_bpm"] - user_prefs["target_tempo"]) / TEMPO_CLOSENESS_RANGE_BPM,
     )
     score += tempo_score
     reasons.append(f"tempo closeness (+{tempo_score:.2f})")
