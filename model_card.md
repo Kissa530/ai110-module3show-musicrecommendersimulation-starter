@@ -32,6 +32,35 @@ Prompts:
 
 Avoid code here. Pretend you are explaining the idea to a friend who does not program.
 
+My recommender is content-based: it compares each song's attributes to a
+listener's taste profile instead of learning from other users' behavior.
+
+**Song features used:** genre, mood, energy, and tempo. The data also has
+valence, danceability, and acousticness, but this version doesn't score them at all.
+
+**User preferences considered:** a favorite genre, a favorite mood, a target
+energy level, and a target tempo.
+
+**How a score is built:** every song starts at zero and earns points.
+- 2.0 points if its genre matches the listener's favorite
+- 1.0 point if its mood matches
+- up to 1.0 point for energy, with more points the closer the song's energy
+  is to the target
+- up to 0.5 points for tempo, scored the same way
+
+The highest possible score is 4.5. The system scores all 18 songs, sorts them
+from highest to lowest, and returns the top five, along with the reasons each
+song earned its points.
+
+**Why these weights:** genre counts the most because it is usually the first
+filter listeners apply, mood comes next because it captures the vibe, and
+tempo counts least because it overlaps with energy.
+
+**Changes from the starter logic:** the starter only had placeholder
+functions. I added closeness-based scoring for the numeric features (so a
+song nearer the target beats one that is merely higher or lower), a reasons
+list for every score, and tempo as a small extra signal.
+
 ---
 
 ## 4. Data  
