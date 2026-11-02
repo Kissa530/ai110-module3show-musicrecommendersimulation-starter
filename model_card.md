@@ -3,7 +3,8 @@
 ## 1. Model Name  
 
 Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+
+**VibeFinder 1.0**
 
 ---
 
@@ -16,6 +17,20 @@ Prompts:
 - What kind of recommendations does it generate  
 - What assumptions does it make about the user  
 - Is this for real users or classroom exploration  
+
+**Goal:** VibeFinder suggests the top 5 songs from a small catalog for one
+listener. It predicts which songs best match that listener's favorite genre,
+mood, energy level, and tempo.
+
+**Assumptions:** each listener has one favorite genre and one favorite mood,
+and they know their target energy and tempo.
+
+**Intended use:** classroom exploration. It shows how a simple recommender
+turns data into a ranked list with reasons.
+
+**Not intended for:** real users or a real music app. It should not be used
+to judge anyone's taste or to make claims about fairness across groups,
+because it was never tested with real listeners.
 
 ---
 
@@ -74,6 +89,15 @@ Prompts:
 - Did you add or remove data  
 - Are there parts of musical taste missing in the dataset  
 
+The catalog has 18 songs and 15 genres. I started with 10 songs and added 8.
+Each song has genre, mood, energy, tempo (BPM), valence, danceability, and
+acousticness. The scoring only uses genre, mood, energy, and tempo.
+
+The data is small and uneven. Lofi has 3 songs and pop has 2. The other 13
+genres have 1 song each. Chill appears 3 times, three other moods appear
+twice, and 9 moods appear once. Real musical taste is missing: lyrics,
+language, artist, and listening history are not in the data.
+
 ---
 
 ## 5. Strengths  
@@ -85,6 +109,14 @@ Prompts:
 - User types for which it gives reasonable results  
 - Any patterns you think your scoring captures correctly  
 - Cases where the recommendations matched your intuition  
+
+The system works best when a listener's genre, mood, and energy agree. Chill
+Lofi gave the three lofi songs first, then a calm ambient song, which matched
+my intuition. Deep Intense Rock put Storm Runner first, which is correct.
+
+Different tastes gave very different lists. Chill Lofi and Deep Intense Rock
+shared no songs. Every recommendation also comes with reasons, like "genre
+match (+2.0)," so it is easy to see why a song ranked where it did.
 
 ---
 
@@ -110,6 +142,7 @@ have only one song, so a single label match tends to win no matter how poor
 the song is on everything else. The system also ignores valence,
 danceability, and acousticness, so listeners who care about those can't
 express it.
+
 
 ---
 
@@ -172,6 +205,7 @@ mood is "intense," so it misses the 1.0 mood points, but that still leaves
 it ahead of every song that is happy but not pop. The system rewards "same
 genre and same energy" more than "same mood," so a workout song can land in
 a happy playlist.
+
 ---
 
 ## 8. Future Work  
@@ -185,6 +219,13 @@ Prompts:
 - Improving diversity among the top results  
 - Handling more complex user tastes  
 
+- Score valence, danceability, and acousticness, and use the `likes_acoustic`
+  idea so listeners can ask for acoustic music.
+- Give partial credit for similar moods and genres, so "chill" and "relaxed"
+  are not a total miss.
+- Add a diversity step so one artist or genre cannot fill most of the top 5.
+- Support listeners with mixed tastes, for example two favorite genres.
+
 ---
 
 ## 9. Personal Reflection  
@@ -195,4 +236,36 @@ Prompts:
 
 - What you learned about recommender systems  
 - Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+- How this changed the way you think about music recommendation apps 
+
+
+**Biggest learning moment:** My biggest learning moment was seeing Winter
+Window rank first for a listener who wanted high energy. The song's energy
+was 0.02 and the listener wanted 0.90, but its genre and mood matches added
+3.0 points. I learned that the weights are choices I made, not facts. When I
+halved the genre bonus and doubled the energy score, Winter Window fell from
+first to third. I now see that the people who design
+the system decide what it prioritizes through the weights they choose.
+
+**How AI helped, and when I double-checked it:** AI wrote my first versions
+of `load_songs`, `score_song`, `recommend_songs`, and the output formatting,
+which saved a lot of time. I still had to check it. I ran `score_song` on
+Library Rain and compared the result (about 4.41) with the number I worked
+out by hand in my README. The starter `main.py` used different profile
+keys than my scoring code, which caused a `KeyError`, so I had to make the
+pieces fit my own design. The starter `main.py` also imported `recommender` instead of
+`src.recommender`, which made `python -m src.main` fail until I fixed the
+import. 
+
+**What surprised me:** I was surprised that a few weighted points could
+produce lists that felt like real recommendations. Chill Lofi returned the
+three lofi songs and then a calm ambient song, and each result came with a
+reason like "genre match (+2.0)." I think the reasons make the list feel
+smart even though the math is simple. It also made me realize that an
+explanation can make a recommendation feel convincing even when the scoring
+weights leave out other qualities a listener may care about.
+
+**What I would try next:** I would score acousticness and valence, give
+partial credit for similar moods like "chill" and "relaxed," and add a
+diversity step so one artist or genre cannot fill the top 5. I would also
+add more songs, since 13 of my 15 genres have only one song.

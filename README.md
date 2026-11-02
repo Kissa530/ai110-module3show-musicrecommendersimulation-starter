@@ -11,7 +11,11 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
+VibeFinder 1.0 is a small content-based music recommender. It loads an
+18-song catalog, compares each song to a listener's favorite genre, mood,
+energy, and tempo, and returns the top 5 songs with a reason for each
+score. I tested it with four listener profiles and one weight experiment,
+and documented its biases in the model card.
 
 ---
 
@@ -110,7 +114,7 @@ of 4.41.
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
-
+    ```
 2. Install dependencies
 
 ```bash
@@ -137,7 +141,7 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
+Default profile: pop / happy, target energy 0.80, target tempo 120 BPM.
 
 ```
 Loaded songs: 18
@@ -177,7 +181,7 @@ Top recommendations:
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
 
----
+
 
 ---
 
@@ -186,9 +190,13 @@ Top recommendations:
 I ran the recommender on four profiles: three typical listeners and one
 deliberately conflicting edge case (18 songs loaded).
 
-Chill Lofi: the top 4 feel right, because the three lofi songs and then ambient/chill are what I’d expect.
-Deep Intense Rock: Storm Runner is right, but Velvet Meter (funk) at #3 doesn’t feel like rock.
-High Energy + Melancholy: Winter Window (nearly silent) winning feels wrong for someone who wants high energy.
+- **Chill Lofi:** the top 4 feel right, because the three lofi songs and
+  then ambient/chill are what I'd expect.
+- **Deep Intense Rock:** Storm Runner is right, but Velvet Meter (funk) at
+  #3 doesn't feel like rock.
+- **High Energy + Melancholy:** Winter Window (nearly silent) winning feels
+  wrong for someone who wants high energy.
+
 
 ### High-Energy Pop
 ```
@@ -306,7 +314,7 @@ Genre: classical | Mood: melancholy | Target energy: 0.90 | Target tempo: 140 BP
    - tempo closeness (+0.38)
 ```
 
----
+
 
 ---
 
@@ -364,26 +372,24 @@ preference wins instead of fixing the problem.
 
 Summarize some limitations of your recommender.
 
-Examples:
 
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+- It only works on a tiny catalog of 18 songs, and 13 of the 15 genres have
+  just one song.
+- Genre and mood labels can outweigh energy and tempo. A classical,
+  melancholy listener who wanted high energy was recommended a nearly silent
+  piano piece first.
+- It does not use valence, danceability, or acousticness, and it does not
+  understand lyrics or language.
+- It treats each label as an exact match, so "chill" and "relaxed" count as
+  completely different.
 
 ---
 
 ## Reflection
 
-Read and complete `model_card.md`:
 
-[**Model Card**](model_card.md)
-
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
-
-
+Simple weighted scoring can produce lists that feel like real
+recommendations, but the weights are design choices that decide what the
+system values. Small catalogs and exact-match labels can also push the same
+songs to the top for different listeners. See my full reflection in the
+[Model Card](model_card.md).
