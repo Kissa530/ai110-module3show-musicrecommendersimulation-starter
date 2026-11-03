@@ -141,42 +141,138 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-Default profile: pop / happy, target energy 0.80, target tempo 120 BPM.
+Output of `python -m src.main` with all four profiles:
 
 ```
 Loaded songs: 18
 
-Recommendations for:
+=== High-Energy Pop ===
   Genre: pop
   Mood: happy
-  Target energy: 0.80
-  Target tempo: 120 BPM
+  Target energy: 0.90
+  Target tempo: 125 BPM
 
 Top recommendations:
 
-1. Sunrise City - Neon Echo (Score: 4.47)
+1. Sunrise City - Neon Echo (Score: 4.38)
+   - genre match (+2.0)
+   - mood match (+1.0)
+   - energy closeness (+0.92)
+   - tempo closeness (+0.46)
+
+2. Gym Hero - Max Pulse (Score: 3.43)
+   - genre match (+2.0)
+   - energy closeness (+0.97)
+   - tempo closeness (+0.46)
+
+3. Rooftop Lights - Indigo Parade (Score: 2.35)
+   - mood match (+1.0)
+   - energy closeness (+0.86)
+   - tempo closeness (+0.49)
+
+4. Velvet Meter - The Pocket Lines (Score: 1.35)
+   - energy closeness (+0.92)
+   - tempo closeness (+0.43)
+
+5. Storm Runner - Voltline (Score: 1.35)
+   - energy closeness (+0.99)
+   - tempo closeness (+0.36)
+
+=== Chill Lofi ===
+  Genre: lofi
+  Mood: chill
+  Target energy: 0.40
+  Target tempo: 78 BPM
+
+Top recommendations:
+
+1. Midnight Coding - LoRoom (Score: 4.48)
    - genre match (+2.0)
    - mood match (+1.0)
    - energy closeness (+0.98)
+   - tempo closeness (+0.50)
+
+2. Library Rain - Paper Lanterns (Score: 4.42)
+   - genre match (+2.0)
+   - mood match (+1.0)
+   - energy closeness (+0.95)
+   - tempo closeness (+0.47)
+
+3. Focus Flow - LoRoom (Score: 3.49)
+   - genre match (+2.0)
+   - energy closeness (+1.00)
    - tempo closeness (+0.49)
 
-2. Gym Hero - Max Pulse (Score: 3.31)
+4. Spacewalk Thoughts - Orbit Bloom (Score: 2.28)
+   - mood match (+1.0)
+   - energy closeness (+0.88)
+   - tempo closeness (+0.40)
+
+5. Blue Hour Train - Calder Street (Score: 1.41)
+   - energy closeness (+0.94)
+   - tempo closeness (+0.47)
+
+=== Deep Intense Rock ===
+  Genre: rock
+  Mood: intense
+  Target energy: 0.92
+  Target tempo: 150 BPM
+
+Top recommendations:
+
+1. Storm Runner - Voltline (Score: 4.48)
    - genre match (+2.0)
-   - energy closeness (+0.87)
+   - mood match (+1.0)
+   - energy closeness (+0.99)
+   - tempo closeness (+0.49)
+
+2. Gym Hero - Max Pulse (Score: 2.39)
+   - mood match (+1.0)
+   - energy closeness (+0.99)
+   - tempo closeness (+0.40)
+
+3. Velvet Meter - The Pocket Lines (Score: 1.24)
+   - energy closeness (+0.94)
+   - tempo closeness (+0.30)
+
+4. Sunrise City - Neon Echo (Score: 1.23)
+   - energy closeness (+0.90)
+   - tempo closeness (+0.33)
+
+5. Rooftop Lights - Indigo Parade (Score: 1.20)
+   - energy closeness (+0.84)
+   - tempo closeness (+0.36)
+
+=== Conflicting: High Energy + Melancholy ===
+  Genre: classical
+  Mood: melancholy
+  Target energy: 0.90
+  Target tempo: 140 BPM
+
+Top recommendations:
+
+1. Winter Window - Elena Voss (Score: 3.18)
+   - genre match (+2.0)
+   - mood match (+1.0)
+   - energy closeness (+0.12)
+   - tempo closeness (+0.06)
+
+2. Slow Motion Lights - Neon Orchard (Score: 1.85)
+   - mood match (+1.0)
+   - energy closeness (+0.42)
+   - tempo closeness (+0.43)
+
+3. Gym Hero - Max Pulse (Score: 1.43)
+   - energy closeness (+0.97)
+   - tempo closeness (+0.46)
+
+4. Storm Runner - Voltline (Score: 1.43)
+   - energy closeness (+0.99)
    - tempo closeness (+0.44)
 
-3. Rooftop Lights - Indigo Parade (Score: 2.44)
-   - mood match (+1.0)
-   - energy closeness (+0.96)
-   - tempo closeness (+0.48)
-
-4. Night Drive Loop - Neon Echo (Score: 1.40)
-   - energy closeness (+0.95)
-   - tempo closeness (+0.45)
-
-5. Paper Kites - Willow Ferry (Score: 1.35)
-   - energy closeness (+0.99)
-   - tempo closeness (+0.36)
+5. Sunrise City - Neon Echo (Score: 1.30)
+   - energy closeness (+0.92)
+   - tempo closeness (+0.38)
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
